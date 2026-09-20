@@ -55,8 +55,8 @@ return new class extends Migration
             $table->unsignedBigInteger('society_id')->nullable()->index();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('action'); // e.g. payment.collected, bill_run.locked, complaint.reassigned
-            $table->string('subject_type');
-            $table->unsignedBigInteger('subject_id');
+            $table->string('subject_type')->nullable();
+            $table->unsignedBigInteger('subject_id')->nullable();
             $table->json('old_values')->nullable();
             $table->json('new_values')->nullable();
             $table->string('ip_address', 45)->nullable();
