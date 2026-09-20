@@ -1,0 +1,32 @@
+# Backend (Laravel)
+/backend/vendor/
+/backend/node_modules/
+/backend/.env
+/backend/storage/*.key
+/backend/storage/app/*
+!/backend/storage/app/.gitkeep
+/backend/storage/framework/cache/*
+/backend/storage/framework/sessions/*
+/backend/storage/framework/views/*
+/backend/storage/logs/*
+/backend/bootstrap/cache/*.php
+/backend/public/storage
+/backend/.phpunit.result.cache
+
+# Web (Next.js)
+/web/node_modules/
+/web/.next/
+/web/out/
+/web/.env
+/web/.env.local
+
+# Mobile (React Native)
+/mobile/node_modules/
+/mobile/.expo/
+/mobile/android/app/build/
+/mobile/ios/build/
+/mobile/.env
+
+# OS / editor
+.DS_Store
+*.log
