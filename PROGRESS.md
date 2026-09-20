@@ -4,15 +4,16 @@ Legend: [ ] not started · [~] in progress · [x] done
 
 ## 0. Foundation & Docs
 - [x] Repo structure (/backend /web /mobile /docs)
-- [ ] docs/decisions.md (ambiguity log)
-- [ ] docs/schema.md
+- [x] docs/decisions.md (ambiguity log)
+- [x] docs/schema.md
 - [ ] docs/api.md + Postman collection
 - [ ] docs/screens.md
 - [ ] docs/deployment.md (GoDaddy cPanel guide)
-- [ ] PROGRESS.md kept up to date (this file)
+- [~] PROGRESS.md kept up to date (this file)
 
 ## 1. Backend — Core Platform
-- [ ] Laravel project bootstrap (composer, .env.example, config)
+- [x] Laravel project bootstrap (composer, .env.example, config)
+- [x] All 84 tables migrated as Laravel migrations (verified: migrate + rollback round-trip clean on SQLite)
 - [ ] Sanctum auth setup, API versioning /api/v1
 - [ ] Multi-tenancy: society_id global scope + middleware
 - [ ] Base model traits: SoftDeletes, Auditable (created_by/updated_by), BelongsToSociety
