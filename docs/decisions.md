@@ -16,6 +16,9 @@ The stock template is built for a Node server: it uses `next.config.ts` `redirec
 - **Menu**: `src/data/navigation/verticalMenuData.tsx` is replaced with a menu built dynamically from the logged-in user's permissions (fetched from `/api/v1/me`), not a static file.
 - One Next.js app serves both Platform Admin and Society panels; post-login redirect target and menu tree are decided by `user.user_type` (`platform_admin` | `society_staff` | fallback) plus `user.permissions[]`.
 
+## Multi-tenancy (gotcha)
+- `App\Models\User` deliberately does **not** use `BelongsToSociety`/`SocietyScope`. `Tenant::id()` resolves the tenant by reading the authenticated user (`Auth::guard('sanctum')->user()`); if `User` itself carried the global scope, resolving that same guard call would re-query `User`, re-triggering the scope, in infinite recursion (confirmed via a 500 "Maximum call stack size reached" while testing `/api/v1/me`). Society-scoped user listings (e.g. "all staff in my society") filter by `society_id` explicitly in the controller/service instead.
+
 ## Multi-tenancy
 - `society_id` lives on every tenant-owned table. Platform-level tables (societies, subscription_plans, society_subscriptions, platform_admins, platform_ad tables, platform audit log) are the only ones without it.
 - Enforced via a global Eloquent scope (`BelongsToSociety` trait + `SocietyScope`) applied automatically from the authenticated user's `society_id`, plus a `EnsureSocietyContext` middleware that 403s any request missing tenant context for tenant routes.

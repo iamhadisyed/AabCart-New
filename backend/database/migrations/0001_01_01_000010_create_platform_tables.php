@@ -9,6 +9,18 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::create('platform_admins', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('last_login_at')->nullable();
+            $table->rememberToken();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('societies', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -25,8 +37,8 @@ return new class extends Migration
             $table->string('timezone')->default('Asia/Karachi');
             $table->string('default_language', 5)->default('en');
             $table->json('settings')->nullable(); // sos_escalation_seconds, verification_lockout_attempts, blood_donor_cooldown_days, complaint_reopen_days, etc.
-            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('created_by')->nullable()->constrained('platform_admins')->nullOnDelete();
+            $table->foreignId('updated_by')->nullable()->constrained('platform_admins')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,18 +46,6 @@ return new class extends Migration
         // Now that `societies` exists, wire up the FK on `users.society_id`
         Schema::table('users', function (Blueprint $table) {
             $table->foreign('society_id')->references('id')->on('societies')->cascadeOnDelete();
-        });
-
-        Schema::create('platform_admins', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->boolean('is_active')->default(true);
-            $table->timestamp('last_login_at')->nullable();
-            $table->rememberToken();
-            $table->timestamps();
-            $table->softDeletes();
         });
 
         Schema::create('subscription_plans', function (Blueprint $table) {
@@ -89,10 +89,10 @@ return new class extends Migration
         Schema::dropIfExists('platform_audit_log');
         Schema::dropIfExists('society_subscriptions');
         Schema::dropIfExists('subscription_plans');
-        Schema::dropIfExists('platform_admins');
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['society_id']);
         });
         Schema::dropIfExists('societies');
+        Schema::dropIfExists('platform_admins');
     }
 };

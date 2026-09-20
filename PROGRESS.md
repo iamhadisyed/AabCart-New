@@ -14,17 +14,18 @@ Legend: [ ] not started · [~] in progress · [x] done
 ## 1. Backend — Core Platform
 - [x] Laravel project bootstrap (composer, .env.example, config)
 - [x] All 84 tables migrated as Laravel migrations (verified: migrate + rollback round-trip clean on SQLite)
-- [ ] Sanctum auth setup, API versioning /api/v1
-- [ ] Multi-tenancy: society_id global scope + middleware
-- [ ] Base model traits: SoftDeletes, Auditable (created_by/updated_by), BelongsToSociety
-- [ ] Audit log system (model + observer + listing API)
-- [ ] Dynamic RBAC (roles, permissions, role_has_permissions) + seeders for default roles
+- [x] Sanctum auth setup, API versioning /api/v1 (staff login, resident login, platform admin login, /me, logout — all tested end-to-end)
+- [x] Multi-tenancy: society_id global scope (SocietyScope) + Tenant helper for console/queue context
+- [x] Base model traits: SoftDeletes, HasAuditColumns (created_by/updated_by), BelongsToSociety, LogsAuditTrail
+- [x] Audit log system (LogsAuditTrail trait + AuditLog::record() for business actions; verified writing rows)
+- [x] Dynamic RBAC (roles, permissions, role_permission/role_user pivots) + PermissionSeeder + RoleProvisioningService (10 default roles)
+- [x] No-OTP resident verification: auto-match, pending-manual-approval, claim-dispute, lockout/cooldown — all tested end-to-end
 - [ ] File storage: private/public disks, upload service w/ image compression
 - [ ] Queue: database driver, scheduler wiring (schedule:run every minute)
 - [ ] Notification system: FCM push + in-app notification center + queued bulk sends
-- [ ] PDF service (DomPDF + Urdu font embedding)
-- [ ] Excel import/export service (Laravel Excel)
-- [ ] QR code service (pure-PHP)
+- [ ] PDF service (DomPDF + Urdu font embedding) — package installed
+- [ ] Excel import/export service (Laravel Excel) — package installed
+- [ ] QR code service (pure-PHP) — package installed (simplesoftwareio/simple-qrcode, bacon/bacon-qr-code, no external binaries)
 - [ ] DB backup scheduler (daily mysqldump, keep 7)
 
 ## 2. Backend — Platform Admin Module
@@ -34,10 +35,10 @@ Legend: [ ] not started · [~] in progress · [x] done
 - [ ] Platform audit log & global reports
 
 ## 3. Backend — Units & Property Setup
-- [ ] Blocks / Streets / Units hierarchy
-- [ ] Unit categories (dynamic), Tariff types (dynamic)
+- [x] Blocks / Streets / Units hierarchy (models + relations)
+- [x] Unit categories (dynamic), Tariff types (dynamic) (models)
 - [ ] Unit CSV/Excel bulk import
-- [ ] Unit CRUD (reference number, residence status, app-linked status)
+- [ ] Unit CRUD API (reference number, residence status, app-linked status) — models done, controllers/routes pending
 
 ## 4. Backend — Billing Engine
 - [ ] Charge heads (dynamic, frequency)
