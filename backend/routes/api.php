@@ -2,6 +2,12 @@
 
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\Platform\AdCampaignController;
+use App\Http\Controllers\Api\V1\Platform\AdvertiserController;
+use App\Http\Controllers\Api\V1\Platform\PlatformReportController;
+use App\Http\Controllers\Api\V1\Platform\SocietyController;
+use App\Http\Controllers\Api\V1\Platform\SocietySubscriptionController;
+use App\Http\Controllers\Api\V1\Platform\SubscriptionPlanController;
 use App\Http\Controllers\Api\V1\Units\BlockController;
 use App\Http\Controllers\Api\V1\Units\StreetController;
 use App\Http\Controllers\Api\V1\Units\TariffTypeController;
@@ -75,7 +81,19 @@ Route::prefix('v1')->group(function () {
 
     // --- Platform admin only ---
     Route::middleware(['auth:sanctum', 'platform_admin'])->group(function () {
-        // Society onboarding, subscriptions, platform ads, global reports
-        // are added here as the Platform Admin module is implemented.
+        Route::get('/platform/dashboard', [PlatformReportController::class, 'dashboard']);
+        Route::get('/platform/audit-log', [PlatformReportController::class, 'auditLog']);
+
+        Route::apiResource('platform/societies', SocietyController::class)->parameters(['societies' => 'society'])->except(['destroy']);
+        Route::post('/platform/societies/{society}/suspend', [SocietyController::class, 'suspend']);
+        Route::post('/platform/societies/{society}/activate', [SocietyController::class, 'activate']);
+
+        Route::get('/platform/societies/{society}/subscriptions', [SocietySubscriptionController::class, 'index']);
+        Route::post('/platform/societies/{society}/subscriptions', [SocietySubscriptionController::class, 'store']);
+        Route::post('/platform/societies/{society}/subscriptions/{subscription}/cancel', [SocietySubscriptionController::class, 'cancel']);
+
+        Route::apiResource('platform/subscription-plans', SubscriptionPlanController::class)->except(['show']);
+        Route::apiResource('platform/advertisers', AdvertiserController::class)->except(['show']);
+        Route::apiResource('platform/ad-campaigns', AdCampaignController::class)->except(['show']);
     });
 });

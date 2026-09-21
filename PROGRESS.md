@@ -29,10 +29,10 @@ Legend: [ ] not started · [~] in progress · [x] done
 - [ ] DB backup scheduler (daily mysqldump, keep 7)
 
 ## 2. Backend — Platform Admin Module
-- [ ] Society onboarding CRUD (+ society admin account creation)
-- [ ] Subscription plans & society subscriptions
-- [ ] Platform-wide ads (advertisers, campaigns, placements, impressions/clicks)
-- [ ] Platform audit log & global reports
+- [x] Society onboarding CRUD (+ society admin account creation + role provisioning) — tested end-to-end
+- [x] Subscription plans & society subscriptions — tested end-to-end
+- [x] Platform-wide ads (advertisers, campaigns, placements) — impressions/clicks tracking endpoints pending (added in Ads module, shared models already in place)
+- [x] Platform audit log & global reports (dashboard stats) — tested end-to-end
 
 ## 3. Backend — Units & Property Setup
 - [x] Blocks / Streets / Units hierarchy (models + relations + CRUD API)
