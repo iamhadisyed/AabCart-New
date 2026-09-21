@@ -35,10 +35,10 @@ Legend: [ ] not started · [~] in progress · [x] done
 - [ ] Platform audit log & global reports
 
 ## 3. Backend — Units & Property Setup
-- [x] Blocks / Streets / Units hierarchy (models + relations)
-- [x] Unit categories (dynamic), Tariff types (dynamic) (models)
-- [ ] Unit CSV/Excel bulk import
-- [ ] Unit CRUD API (reference number, residence status, app-linked status) — models done, controllers/routes pending
+- [x] Blocks / Streets / Units hierarchy (models + relations + CRUD API)
+- [x] Unit categories (dynamic), Tariff types (dynamic) (models + CRUD API)
+- [x] Unit CSV/Excel bulk import (UnitsImport, auto-creates missing lookups, per-row error reporting)
+- [x] Unit CRUD API (reference number auto-generated + permanent, residence status, app-linked status, release-unit) — tested end-to-end
 
 ## 4. Backend — Billing Engine
 - [ ] Charge heads (dynamic, frequency)
