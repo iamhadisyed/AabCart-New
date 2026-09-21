@@ -21,7 +21,7 @@ Legend: [ ] not started · [~] in progress · [x] done
 - [x] Dynamic RBAC (roles, permissions, role_permission/role_user pivots) + PermissionSeeder + RoleProvisioningService (10 default roles)
 - [x] No-OTP resident verification: auto-match, pending-manual-approval, claim-dispute, lockout/cooldown — all tested end-to-end
 - [ ] File storage: private/public disks, upload service w/ image compression
-- [ ] Queue: database driver, scheduler wiring (schedule:run every minute)
+- [x] Queue: database driver, scheduler wiring (schedule:run every minute -> queue:work chain, see routes/console.php)
 - [ ] Notification system: FCM push + in-app notification center + queued bulk sends
 - [ ] PDF service (DomPDF + Urdu font embedding) — package installed
 - [ ] Excel import/export service (Laravel Excel) — package installed
@@ -41,17 +41,18 @@ Legend: [ ] not started · [~] in progress · [x] done
 - [x] Unit CRUD API (reference number auto-generated + permanent, residence status, app-linked status, release-unit) — tested end-to-end
 
 ## 4. Backend — Billing Engine
-- [ ] Charge heads (dynamic, frequency)
-- [ ] Rate matrix (category × tariff × charge head) with versioning (effective_from)
-- [ ] Unit-level overrides (extra charge / waiver) with approval
-- [ ] One-off charges per unit
-- [ ] Arrears carry-forward
-- [ ] Adjustments (credit/debit lines)
-- [ ] Late payment surcharge config
-- [ ] Bill runs (generate/preview/lock/regenerate, queued chunked jobs)
-- [ ] Bill PDF (3-copy layout, QR, ads slot, announcements, app-linked line)
-- [ ] Bulk bill print/download (queued, chunked)
-- [ ] Due-date & overdue reminder scheduler
+- [x] Charge heads (dynamic, frequency)
+- [x] Rate matrix (category × tariff × charge head) with versioning (effective_from) + grid bulk-set
+- [x] Unit-level overrides (extra charge / waiver, fixed or percent) with approver
+- [x] One-off charges per unit (model + folded into bill generation; raised by Ownership Transfer module already)
+- [x] Arrears carry-forward (surcharge-inclusive once a bill goes overdue) — tested end-to-end
+- [x] Adjustments (credit/debit lines) — standalone, folded into next bill run — tested end-to-end
+- [x] Late payment surcharge config (fixed or percent, per-society setting)
+- [x] Bill runs (generate/preview/lock/regenerate, queued chunked jobs via GenerateBillRunJob) — tested end-to-end incl. lock immutability
+- [x] Bill PDF (3-copy layout, QR via SVG data URI, ads slot, announcements, app-linked line) — tested, valid PDF confirmed
+- [x] Bulk bill print/download (queued job GenerateBillRunPdfJob, status+download endpoints) — tested with 75 units/225 copies
+- [x] Overdue marking scheduler (bills:mark-overdue, daily) — tested end-to-end
+- [ ] Due-date reminder push/in-app notifications (deferred to Notifications module #18)
 
 ## 5. Backend — Payments, Receipts, Reconciliation
 - [ ] Cash/bank payment recording

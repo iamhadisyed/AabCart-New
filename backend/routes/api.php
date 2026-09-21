@@ -2,6 +2,12 @@
 
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\Billing\BillAdjustmentController;
+use App\Http\Controllers\Api\V1\Billing\BillController;
+use App\Http\Controllers\Api\V1\Billing\BillRunController;
+use App\Http\Controllers\Api\V1\Billing\ChargeHeadController;
+use App\Http\Controllers\Api\V1\Billing\RateMatrixController;
+use App\Http\Controllers\Api\V1\Billing\UnitChargeOverrideController;
 use App\Http\Controllers\Api\V1\ElectionController;
 use App\Http\Controllers\Api\V1\OwnershipTransferController;
 use App\Http\Controllers\Api\V1\Platform\AdCampaignController;
@@ -104,7 +110,55 @@ Route::prefix('v1')->group(function () {
             Route::post('/election-candidates/{electionCandidate}/review', [ElectionController::class, 'reviewCandidate']);
         });
 
-        // Further module route groups (billing, complaints, SOS, ...) are
+        // --- Billing engine ---
+        Route::middleware('permission:billing.view')->group(function () {
+            Route::get('/charge-heads', [ChargeHeadController::class, 'index']);
+            Route::get('/rate-matrix', [RateMatrixController::class, 'index']);
+            Route::get('/rate-matrix/history', [RateMatrixController::class, 'history']);
+            Route::get('/unit-charge-overrides', [UnitChargeOverrideController::class, 'index']);
+            Route::get('/bill-adjustments', [BillAdjustmentController::class, 'index']);
+            Route::get('/bill-runs', [BillRunController::class, 'index']);
+            Route::get('/bill-runs/{billRun}', [BillRunController::class, 'show']);
+            Route::get('/bill-runs/{billRun}/bulk-pdf/status', [BillRunController::class, 'bulkPdfStatus']);
+            Route::get('/bill-runs/{billRun}/bulk-pdf/download', [BillRunController::class, 'downloadBulkPdf']);
+            Route::get('/bills', [BillController::class, 'index']);
+            Route::get('/bills/{bill}', [BillController::class, 'show']);
+            Route::get('/bills/{bill}/pdf', [BillController::class, 'pdf']);
+        });
+
+        Route::middleware('permission:billing.charge_heads.manage')->group(function () {
+            Route::post('/charge-heads', [ChargeHeadController::class, 'store']);
+            Route::put('/charge-heads/{chargeHead}', [ChargeHeadController::class, 'update']);
+            Route::delete('/charge-heads/{chargeHead}', [ChargeHeadController::class, 'destroy']);
+        });
+
+        Route::middleware('permission:billing.rate_matrix.manage')->group(function () {
+            Route::post('/rate-matrix', [RateMatrixController::class, 'store']);
+            Route::post('/rate-matrix/bulk', [RateMatrixController::class, 'bulkSet']);
+        });
+
+        Route::middleware('permission:billing.overrides.manage')->group(function () {
+            Route::post('/unit-charge-overrides', [UnitChargeOverrideController::class, 'store']);
+            Route::put('/unit-charge-overrides/{unitChargeOverride}', [UnitChargeOverrideController::class, 'update']);
+            Route::delete('/unit-charge-overrides/{unitChargeOverride}', [UnitChargeOverrideController::class, 'destroy']);
+        });
+
+        Route::middleware('permission:billing.adjustments.manage')->group(function () {
+            Route::post('/bill-adjustments', [BillAdjustmentController::class, 'store']);
+            Route::delete('/bill-adjustments/{billAdjustment}', [BillAdjustmentController::class, 'destroy']);
+        });
+
+        Route::middleware('permission:billing.bill_runs.generate')->group(function () {
+            Route::post('/bill-runs', [BillRunController::class, 'store']);
+            Route::put('/bill-runs/{billRun}', [BillRunController::class, 'update']);
+            Route::post('/bill-runs/{billRun}/generate', [BillRunController::class, 'generate']);
+            Route::post('/bill-runs/{billRun}/regenerate', [BillRunController::class, 'regenerate']);
+            Route::post('/bill-runs/{billRun}/bulk-pdf', [BillRunController::class, 'requestBulkPdf']);
+        });
+
+        Route::middleware('permission:billing.bill_runs.lock')->post('/bill-runs/{billRun}/lock', [BillRunController::class, 'lock']);
+
+        // Further module route groups (complaints, SOS, ...) are
         // added here as each module is implemented - see PROGRESS.md.
     });
 

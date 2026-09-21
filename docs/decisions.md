@@ -44,6 +44,10 @@ The stock template is built for a Node server: it uses `next.config.ts` `redirec
 ## SOS
 - Escalation is double-guarded: the scheduler (`schedule:run` every minute) checks all unacknowledged SOS older than the escalation threshold AND the mobile polling endpoint (hit every 5–10s from the security dashboard) also runs the same escalation check inline on each call, so escalation isn't delayed by up to a full minute of cron granularity.
 
+## API-only Laravel gotchas (found while testing the Billing module)
+- Laravel 11's `ApplicationBuilder` registers a default `redirectGuestsTo(fn () => route('login'))` even when no web auth scaffolding exists. Since this app has no `login` named route, an unauthenticated request without an explicit `Accept: application/json` header (i.e. `expectsJson()` false) crashed with a 500 `RouteNotFoundException` instead of a clean 401 - the framework attempts the redirect before the exception handler ever sees an `AuthenticationException`. Fixed in `bootstrap/app.php` by overriding `redirectGuestsTo(fn () => null)` plus an explicit `AuthenticationException` JSON renderer, so every unauthenticated request gets `401 {"message":"Unauthenticated."}` regardless of the client's Accept header (mobile/web clients should still send it, but the API no longer depends on that).
+- `RateMatrix`'s table is `rate_matrix` (singular, matching the migration), not Eloquent's guessed `rate_matrices` - needs an explicit `protected $table`. Worth double-checking on any other model whose class name pluralizes irregularly.
+
 ## Hosting/queues
 - All "real-time" behavior (SOS, notifications) is push (FCM) + polling, never sockets, per the GoDaddy shared-hosting constraint.
 - Queue driver: `database`. `schedule:run` cron (every minute) chains `queue:work --stop-when-empty --max-time=50` (kept under the 1-minute cron cadence) so no long-running worker process is needed.
