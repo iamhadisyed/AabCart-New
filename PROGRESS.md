@@ -164,6 +164,17 @@ Legend: [ ] not started · [~] in progress · [x] done
 - [ ] FCM integration (incl. SOS full-screen alarm)
 - [ ] i18n English/Urdu + RTL
 
+## 22. Backend — Ownership Transfer (added 2026-09-21, Pakistan-market fit)
+- [ ] Ownership transfer records (sale/inheritance/gift), documents, transfer fee charging
+- [ ] Approval workflow (Society Admin), on completion updates unit owner + releases app link
+- [ ] Transfer history per unit (audit trail of past owners)
+
+## 23. Backend — Elections / AGM (added 2026-09-21, Pakistan-market fit)
+- [ ] Elections + positions (seats per position)
+- [ ] Nomination window + candidate approval workflow
+- [ ] Secret ballot voting (one vote per unit per position)
+- [ ] Certified/published results (aggregate counts only, never unit->candidate mapping)
+
 ## 21. Non-functional
 - [ ] Seeders with realistic PK sample data
 - [ ] .env.example (backend/web/mobile) fully documented

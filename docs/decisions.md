@@ -2,6 +2,12 @@
 
 Ambiguities in the spec and the decisions made to resolve them. Updated continuously as the build progresses.
 
+## Added modules (post-spec, user-requested, 2026-09-21)
+Two modules not in the original spec were added at the user's request, aimed at making the product a better fit for the Pakistani housing-society market specifically:
+- **Ownership Transfer**: an append-only ledger of ownership/tenancy changes per unit (sale, inheritance, gift), with transfer fee charging and document attachments (sale deed, CNIC copies). Completing a transfer updates `units.owner_name`/`residence_status` and reuses the existing "release unit" mechanism (see Auth section below) so the new owner/tenant must re-verify their own app account - the old resident's login never silently carries over.
+- **Elections / AGM**: nominations → candidates per position → secret ballot (one vote per unit per position) → certified results. Deliberately separate from the generic Polls module because society elections have a real procedural shape (nomination window, candidate approval, per-position seats, certified/published results) that a yes/no poll doesn't capture, and are often a legal/bylaws requirement for housing societies here.
+- Ballot secrecy: `election_votes` stores which unit voted for which candidate (to enforce one-vote-per-unit-per-position and prevent double voting), but no list endpoint ever exposes the unit→candidate mapping - only aggregate counts are ever returned, and only after the election closes (or immediately if `results_visibility` allows live counts, mirroring the Polls module's `results_visibility` setting).
+
 ## Sequencing
 - Build order follows the spec's required order: DB schema → API list → screens list → business rules → implement backend module-by-module → web → mobile.
 - `/web` (Materialize "full-version", TypeScript, App Router) was supplied by the user as a zip and extracted as-is into `/web`. The "starter-kit" and `demo-configs` variants from the zip were discarded (not needed).
