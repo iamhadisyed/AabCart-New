@@ -44,6 +44,8 @@ class PermissionSeeder extends Seeder
             'Staff' => ['staff.manage', 'staff.attendance.mark', 'payroll.manage'],
             'RBAC' => ['roles.manage', 'staff_accounts.manage'],
             'Society' => ['society.settings.manage', 'audit_log.view'],
+            'OwnershipTransfers' => ['ownership_transfers.manage', 'ownership_transfers.view'],
+            'Elections' => ['elections.manage'],
         ];
 
         foreach ($catalogue as $group => $keys) {

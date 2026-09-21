@@ -108,5 +108,16 @@ Conventions (enforced via `App\Support\Migration\Columns`, see `backend/app/Supp
 - `staff_attendance` — daily marking, unique per staff/date.
 - `payroll_runs` + `payslips` — allowances/deductions/advances, `pdf_path`.
 
+## 0001_01_01_000160 — Ownership transfer (added, Pakistan-market fit)
+- `ownership_transfers` — append-only ledger per unit: sale/inheritance/gift, previous/new owner name+CNIC, `transfer_fee` (optionally linked to a generated `one_off_charges` row), approval workflow (pending→approved/rejected→completed). Completing a transfer updates `units.owner_name`/`residence_status` and releases the unit's `linked_user_id` (new occupant re-verifies fresh).
+- `ownership_transfer_documents` — sale deed, CNIC copies, etc.
+
+## 0001_01_01_000170 — Elections / AGM (added, Pakistan-market fit)
+- `elections` — nomination window, voting window, `status` (draft/nominations_open/voting_open/closed/cancelled), `results_visibility` (after_close/live).
+- `election_positions` — e.g. President, General Secretary; `seats_available`.
+- `election_candidates` — nominee (resident user + unit), symbol, manifesto, approval workflow.
+- `election_votes` — one vote per unit per position (unique constraint), immutable once cast. Never exposed via a unit→candidate listing endpoint - only aggregate counts.
+- `election_results` — certified per-candidate vote counts + winner flag, snapshotted at close (not just computed live) so a published result can't silently change if a vote row is later touched by a bug/migration.
+
 ## Not yet in migrations (planned, tracked in PROGRESS.md)
 - Materialized/cached report tables are intentionally avoided — all reports are computed on read from the tables above to avoid drift; heavy aggregate reports use the `cache` table (file/database cache driver) for short-TTL caching instead of new tables.

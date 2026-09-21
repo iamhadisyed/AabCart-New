@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\ElectionController;
+use App\Http\Controllers\Api\V1\OwnershipTransferController;
 use App\Http\Controllers\Api\V1\Platform\AdCampaignController;
 use App\Http\Controllers\Api\V1\Platform\AdvertiserController;
 use App\Http\Controllers\Api\V1\Platform\PlatformReportController;
@@ -74,6 +76,33 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::middleware('permission:units.import')->post('/units/import', [UnitController::class, 'import']);
+
+        // --- Ownership Transfers ---
+        Route::middleware('permission:ownership_transfers.view')->group(function () {
+            Route::get('/ownership-transfers', [OwnershipTransferController::class, 'index']);
+            Route::get('/ownership-transfer-documents/{document}/download', [OwnershipTransferController::class, 'downloadDocument']);
+        });
+        Route::middleware('permission:ownership_transfers.manage')->group(function () {
+            Route::post('/ownership-transfers', [OwnershipTransferController::class, 'store']);
+            Route::post('/ownership-transfers/{ownershipTransfer}/documents', [OwnershipTransferController::class, 'uploadDocument']);
+            Route::post('/ownership-transfers/{ownershipTransfer}/approve', [OwnershipTransferController::class, 'approve']);
+            Route::post('/ownership-transfers/{ownershipTransfer}/reject', [OwnershipTransferController::class, 'reject']);
+            Route::post('/ownership-transfers/{ownershipTransfer}/complete', [OwnershipTransferController::class, 'complete']);
+        });
+
+        // --- Elections / AGM ---
+        Route::get('/elections', [ElectionController::class, 'index']);
+        Route::get('/elections/{election}', [ElectionController::class, 'show']);
+        Route::get('/elections/{election}/results', [ElectionController::class, 'results']);
+        Route::post('/election-positions/{electionPosition}/nominate', [ElectionController::class, 'nominate']);
+        Route::post('/election-positions/{electionPosition}/vote', [ElectionController::class, 'vote']);
+
+        Route::middleware('permission:elections.manage')->group(function () {
+            Route::post('/elections', [ElectionController::class, 'store']);
+            Route::post('/elections/{election}/transition', [ElectionController::class, 'transition']);
+            Route::post('/elections/{election}/certify-results', [ElectionController::class, 'certifyResults']);
+            Route::post('/election-candidates/{electionCandidate}/review', [ElectionController::class, 'reviewCandidate']);
+        });
 
         // Further module route groups (billing, complaints, SOS, ...) are
         // added here as each module is implemented - see PROGRESS.md.
