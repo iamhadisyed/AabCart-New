@@ -16,6 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\HandleCors::class,
         ]);
 
+        // API-only backend: no `login` named route exists, so override the
+        // framework's default guest-redirect (which calls route('login')
+        // and throws RouteNotFoundException) - unauthenticated requests
+        // should just get a 401, handled below via withExceptions().
+        $middleware->redirectGuestsTo(fn () => null);
+
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
             'platform_admin' => \App\Http\Middleware\EnsurePlatformAdmin::class,
@@ -24,5 +30,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // This is an API-only backend - every route lives under /api, so an
+        // unauthenticated request should always get 401 JSON, never a
+        // redirect to a `login` named route that doesn't exist here
+        // (the default Authenticate middleware only skips that redirect
+        // when the request's Accept header already says JSON).
+        $exceptions->render(fn (\Illuminate\Auth\AuthenticationException $e) => response()->json(['message' => 'Unauthenticated.'], 401));
     })->create();
