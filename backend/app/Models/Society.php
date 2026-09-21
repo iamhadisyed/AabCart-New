@@ -36,4 +36,9 @@ class Society extends Model
     {
         return $this->hasMany(Role::class);
     }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(SocietySubscription::class);
+    }
 }
