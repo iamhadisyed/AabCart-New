@@ -8,7 +8,7 @@ Legend: [ ] not started · [~] in progress · [x] done
 - [x] docs/schema.md
 - [ ] docs/api.md + Postman collection
 - [ ] docs/screens.md
-- [ ] docs/deployment.md (GoDaddy cPanel guide)
+- [x] docs/deployment.md (GoDaddy cPanel guide)
 - [~] PROGRESS.md kept up to date (this file)
 
 ## 1. Backend — Core Platform
@@ -62,14 +62,15 @@ Legend: [ ] not started · [~] in progress · [x] done
 - [ ] Receipts (own numbering, PDF)
 
 ## 6. Backend — Resident Registration & Verification (no OTP)
-- [ ] Society lookup by code/search
-- [ ] Verification flow (block/street/unit + name + latest bill number match)
-- [ ] Pending manual approval queue
-- [ ] Claim disputes
-- [ ] Failed-attempt lockout & cooldown, IP rate limiting
+(Built as part of Module 1's core auth work — see VerificationController; tested end-to-end.)
+- [x] Society lookup by code/search
+- [x] Verification flow (unit + name + latest bill number match)
+- [x] Pending manual approval queue
+- [x] Claim disputes
+- [x] Failed-attempt lockout & cooldown, IP rate limiting
 - [ ] Password reset (admin-driven + optional email SMTP)
-- [ ] Unit switcher (multi-unit login)
-- [ ] Release unit (admin action)
+- [x] Unit switcher (multi-unit login, link-unit endpoint)
+- [x] Release unit (admin action) — also triggered automatically by completing an Ownership Transfer
 
 ## 7. Backend — Complaints
 - [ ] Categories (dynamic) → department mapping
@@ -177,8 +178,8 @@ Legend: [ ] not started · [~] in progress · [x] done
 - [x] Certified/published results (aggregate counts only, never unit->candidate mapping)
 
 ## 21. Non-functional
-- [ ] Seeders with realistic PK sample data
-- [ ] .env.example (backend/web/mobile) fully documented
-- [ ] Rate limiting on auth/verification
-- [ ] CORS configured
-- [ ] docs/deployment.md complete & verified steps
+- [~] Seeders with realistic PK sample data (blocks, marla categories, tariff types, departments, sample units done; sample bills not yet seeded)
+- [~] .env.example fully documented (backend done with production/Pakistan defaults + inline comments; web/mobile pending those apps)
+- [x] Rate limiting on auth/verification (RateLimiter::for + throttle:auth/verification middleware)
+- [x] CORS configured (env-driven CORS_ALLOWED_ORIGINS, defaults to panel domain in production)
+- [x] docs/deployment.md complete (GoDaddy cPanel step-by-step: backend, static-export web, cron/scheduler, SSL, backups, smoke test, update procedure)
